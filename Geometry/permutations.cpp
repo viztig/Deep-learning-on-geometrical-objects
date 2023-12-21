@@ -73,6 +73,10 @@ int main(int, char *argv[])
     int end = stoi(_end);
     int step = stoi(_step);
     std::vector<std::vector<int>> res = generate_permutations(start, end, step);
+    std::cout << "number of permutations generated:"
+              << " " << res.size() << std::endl;
+    std::cout << "\n\n"
+              << std::endl;
     for (auto &it : res)
     {
         for (auto &x : it)

@@ -1,4 +1,4 @@
-//Author:VAIBHAV VIKAS (VAVIKAS)
+// Author:VAIBHAV VIKAS (VAVIKAS)
 #pragma once
 #include <iostream>
 #include <vector>

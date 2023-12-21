@@ -189,8 +189,8 @@ int main(int, char *argv[])
     int step = stoi(_step);
     const char *out_dir = argv[1];
     const char *folder = argv[2];
-    // std::vector<std::vector<int>> res = generate_permutations(start, end, step);
-    std::vector<std::vector<int>> res{{8, 8, 10, 10}};
+    std::vector<std::vector<int>> res = generate_permutations(start, end, step);
+    //std::vector<std::vector<int>> res{{8, 8, 10, 10}};
     read_directory(argv[1], argv[2], res);
     return 0;
 }
