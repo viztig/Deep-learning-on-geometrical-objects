@@ -1,3 +1,4 @@
+// Author:VAIBHAV VIKAS(VAVIKAS)
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -175,7 +176,10 @@ std::string read_obj(std::string filepath, std::string outfilepath)
     new_plyFile.close();
     return outfilepath;
 }
-std::string readFile_key(std::string filepath, std::string outfilepath)
+/*
+read_key to read the .key file with path as filepath and convert it into point cloud .ply file with path as outfilepath
+*/
+std::string read_key(std::string filepath, std::string outfilepath)
 {
     std::ofstream plyFile(outfilepath);
     std::ifstream infile(filepath);
@@ -243,8 +247,10 @@ std::string readFile_key(std::string filepath, std::string outfilepath)
     plyFile.close();
     return outfilepath;
 }
-
-std::string readFile_inp(std::string filepath, std::string outfilepath)
+/*
+read_inp to read the .inp file with path as filepath and convert it into point cloud .ply file with path as outfilepath
+*/
+std::string read_inp(std::string filepath, std::string outfilepath)
 {
     std::ofstream plyFile(outfilepath);
     std::ifstream infile(filepath);
@@ -292,7 +298,15 @@ std::string readFile_inp(std::string filepath, std::string outfilepath)
             int c = 0;
             while (getline(iss, part, ',') && c < 3)
             {
-                double num = std::stod(part);
+                double num = 0.0;
+                try
+                {
+                    num = std::stod(part);
+                }
+                catch (const std::invalid_argument &ex)
+                {
+                    std::cerr << "Caught std::invalid argument" << ex.what() << std::endl;
+                }
                 plyFile << num << " ";
                 c++;
             }
@@ -312,6 +326,9 @@ std::string readFile_inp(std::string filepath, std::string outfilepath)
     plyFile.close();
     return outfilepath;
 }
+/*
+get_file_extension to get the extension of the file format with the path of file as file_path
+*/
 std::string get_file_extension(std::string file_path)
 {
     int Size = 0;
@@ -333,13 +350,16 @@ std::string get_file_extension(std::string file_path)
     }
     return s;
 }
-void read_directory(const char *path, const char *folder_path)
+/*
+convert_directory to convert all the CAD/FE files in the old_folder_path directory to point cloud files(.ply) files in a new_folder_path directory
+*/
+void convert_directory(const char *old_folder_path, const char *new_folder_path)
 {
     DIR *dir;
     struct dirent *ent;
-    std::string pth = path;
-    std::string folderpath = folder_path;
-    if ((dir = opendir(path)) != NULL)
+    std::string pth = old_folder_path;
+    std::string folderpath = new_folder_path;
+    if ((dir = opendir(old_folder_path)) != NULL)
     {
         while ((ent = readdir(dir)) != NULL)
         {
@@ -359,19 +379,19 @@ void read_directory(const char *path, const char *folder_path)
                 {
                     std::string output_dirpath = folderpath + '/' + filepath.substr(0, filepath.size() - 4);
                     std::string output_filepath = output_dirpath + ".ply";
-                    file = read_step(input_filepath, output_filepath);
+                    file = read_obj(input_filepath, output_filepath);
                 }
                 if (s == ".key")
                 {
                     std::string output_dirpath = folderpath + '/' + filepath.substr(0, filepath.size() - 4);
                     std::string output_filepath = output_dirpath + ".ply";
-                    file = read_step(input_filepath, output_filepath);
+                    file = read_key(input_filepath, output_filepath);
                 }
                 if (s == ".inp" || s == ".inc")
                 {
                     std::string output_dirpath = folderpath + '/' + filepath.substr(0, filepath.size() - 4);
                     std::string output_filepath = output_dirpath + ".ply";
-                    file = read_step(input_filepath, output_filepath);
+                    file = read_inp(input_filepath, output_filepath);
                 }
             }
         }
@@ -409,6 +429,9 @@ std::vector<Point> read_dir(const char *path,std::string mode)
     }
     return all_v;
 }
+*/
+/*
+read_vector to get all the points of the point cloud filepath(.ply) into a vector, maybe to do some operations on it
 */
 std::vector<Point> read_vector(std::string filepath)
 {
@@ -449,12 +472,13 @@ std::vector<Point> read_vector(std::string filepath)
     }
     return v;
 }
-void getParam(std::vector<Point> &v)
+/*void getParam(std::vector<Point> &v)
 {
     std::sort(v.begin(), v.end(), compareZ);
-}
+}*/
 int main(int, char *argv[])
 {
+    /*
     std::string s = get_file_extension(argv[1]);
     std::string file;
     if (s == ".step")
@@ -467,11 +491,11 @@ int main(int, char *argv[])
     }
     if (s == ".key")
     {
-        file = readFile_key(argv[1], argv[2]);
+        file = read_key(argv[1], argv[2]);
     }
     if (s == ".inp" || s == ".inc")
     {
-        file = readFile_inp(argv[1], argv[2]);
+        file = read_inp(argv[1], argv[2]);
     }
     // std::vector<Point> v = read_step(argv[1], argv[2]);
     //   std::vector<Point> v = read_dir(argv[1]);
@@ -480,5 +504,9 @@ int main(int, char *argv[])
     //  std::vector<Point> v = read_vector(argv[1]);
     //  getParam(v);
     //  std::cout << v[0].y space v[1].y << std::endl;
+    */
+    std::cout << "Starting conversion to point cloud(.ply)" << std::endl;
+    convert_directory(argv[1], argv[2]);
+    std::cout << "Completed" << std::endl;
     return 0;
 }
